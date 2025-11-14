@@ -2,14 +2,16 @@
 	import "../app.css";
 	import favicon from "$lib/assets/favicon.svg";
 	import { Navigation } from "@skeletonlabs/skeleton-svelte";
-	import { HouseIcon, SettingsIcon, CastleIcon } from "@lucide/svelte";
+	import { HouseIcon, SettingsIcon, CastleIcon, StarIcon, LayoutList } from "@lucide/svelte";
 	
 	let { children } = $props();
 
 	const links = [
 		{ label: 'Mods', href: '/', icon: HouseIcon },
+    { label: 'Subscriptions', href: '/', icon: StarIcon },
+    { label: 'Collections', href: '/', icon: LayoutList }
 	];
-  	let anchorRail = 'btn hover:preset-tonal aspect-square w-full max-w-[84px] flex flex-col items-center gap-0.5';
+  let anchorRail = 'btn hover:preset-tonal aspect-square w-full max-w-[84px] flex flex-col items-center gap-0.5';
 </script>
 
 <svelte:head>
@@ -37,8 +39,9 @@
       </Navigation.Menu>
     </Navigation.Content>
     <Navigation.Footer>
-      <a href="#" class={anchorRail} title="Settings" aria-label="Settings">
+      <a href="/" class={anchorRail} title="Settings" aria-label="Settings">
         <SettingsIcon class="size-5" />
+        <span class="text-xs">Settings</span>
       </a>
     </Navigation.Footer>
   </Navigation>
