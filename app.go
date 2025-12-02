@@ -27,14 +27,14 @@ func (a *App) loadOrCreateConfig() {
 		log.Fatal(err)
 	}
 	configFolder := filepath.Join(configRoot, "anno-modmanager")
-	err = os.MkdirAll(configFolder, 0644)
+	err = os.MkdirAll(configFolder, 0750)
 	if err != nil {
 		log.Fatal(err)
 	}
 	configFile := filepath.Join(configFolder, "config.json")
 	fmt.Println("CONFIG PATH: ", configFile)
 	// TODO load file, initialize config
-	cf, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE, 0644)
+	cf, err := os.OpenFile(configFile, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
