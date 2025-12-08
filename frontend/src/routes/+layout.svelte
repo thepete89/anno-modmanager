@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/state";
 	import "../app.css";
 	import favicon from "$lib/assets/favicon.svg";
 	import { Navigation } from "@skeletonlabs/skeleton-svelte";
@@ -31,7 +32,7 @@
       <Navigation.Menu>
         {#each links as link (link)}
           {@const Icon = link.icon}
-          <a href={link.href} class={anchorRail}>
+          <a href={link.href} class={[anchorRail, link.href === page.url.pathname && "preset-tonal-primary"]}>
             <Icon class="size-5" />
             <span class="text-xs">{link.label}</span>
           </a>
@@ -39,15 +40,19 @@
       </Navigation.Menu>
     </Navigation.Content>
     <Navigation.Footer>
-      <a href="/" class={anchorRail} title="Settings" aria-label="Settings">
+      <a href="/settings" class={[anchorRail, "/settings" === page.url.pathname && "preset-tonal-primary"]} title="Settings" aria-label="Settings">
         <SettingsIcon class="size-5" />
         <span class="text-xs">Settings</span>
       </a>
     </Navigation.Footer>
   </Navigation>
   <!-- --- -->
-  <div class="flex justify-center items-center">    
-	{@render children()}
-  </div>
+  <main class="space-y-4 p-4">
+    {@render children()}
+  </main>
+  <!--
+    <div class="flex justify-center items-center">
+    </div>
+  -->
 </div>
 
