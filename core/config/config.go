@@ -1,14 +1,13 @@
 package config
 
 import (
-	"bufio"
+	"anno-modmanager/core/helpers"
 	"context"
-	"encoding/json"
-	"io"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type AMMConfigData struct {
@@ -26,16 +25,7 @@ func NewAMMConfig() *AMMConfig {
 	return &AMMConfig{}
 }
 
-// helpers to load or create config
-func (c *AMMConfig) closeConfigFile(f *os.File) {
-	err := f.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func (c *AMMConfig) loadOrCreateConfig() {
-	// load app config
+func (c *AMMConfig) openOrCreateConfigfile() *os.File {
 	configRoot, err := os.UserConfigDir()
 	if err != nil {
 		log.Fatal(err)
@@ -47,30 +37,18 @@ func (c *AMMConfig) loadOrCreateConfig() {
 	}
 	configFile := filepath.Join(configFolder, "config.json")
 	log.Println("CONFIG PATH: ", configFile)
-	cf, err := os.OpenFile(configFile, os.O_CREATE|os.O_RDWR, 0644)
+	cf := helpers.OpenOrCreateFile(configFile)
+	return cf
+}
+
+func (c *AMMConfig) loadOrCreateConfig() {
+	cf := c.openOrCreateConfigfile()
+	defer helpers.CloseFile(cf)
+	configData, err := helpers.LoadOrInitializeFromJsonFile[AMMConfigData](cf)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("loading or creating config.json failed", err)
 	}
-	defer c.closeConfigFile(cf)
-	// read config
-	cfr := bufio.NewScanner(cf)
-	var cfc strings.Builder
-	for cfr.Scan() {
-		cfc.WriteString(cfr.Text())
-	}
-	// parse config
-	configData := AMMConfigData{}
-	dec := json.NewDecoder(strings.NewReader(cfc.String()))
-	err = dec.Decode(&configData)
-	if err == io.EOF {
-		log.Println("JSON Config was empty - recreating...")
-		configData = AMMConfigData{"", "", ""}
-		enc := json.NewEncoder(cf)
-		enc.Encode(configData)
-	} else if err != nil {
-		log.Fatal("JSON Decode error:", err)
-	}
-	c.config = &configData
+	c.config = configData
 }
 
 func (c *AMMConfig) InitAMMConfig(ctx context.Context) {
@@ -80,4 +58,31 @@ func (c *AMMConfig) InitAMMConfig(ctx context.Context) {
 
 func (c *AMMConfig) GetConfigData() AMMConfigData {
 	return *c.config
+}
+
+func (c *AMMConfig) SaveConfigData(cd AMMConfigData) {
+	cf := c.openOrCreateConfigfile()
+	defer helpers.CloseFile(cf)
+	err := helpers.SaveToJsonFile(cf, &cd)
+	if err != nil {
+		log.Fatal("Saving config.json failed", err)
+	}
+	c.config = &cd
+	// TODO refresh config in other app parts
+}
+
+func (c *AMMConfig) SelectAnnoModsFolder() string {
+	// TODO
+	userhome, _ := os.UserHomeDir()
+	dialogOptions := runtime.OpenDialogOptions{
+		DefaultDirectory: userhome,
+		DefaultFilename:  "",
+		Title:            "Select Anno 1800 Mods Folder",
+	}
+	folder, err := runtime.OpenDirectoryDialog(c.ctx, dialogOptions)
+	if err != nil {
+		log.Println("Anno mods folder selection failed", err)
+		return ""
+	}
+	return folder
 }
