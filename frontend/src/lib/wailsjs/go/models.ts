@@ -19,3 +19,11 @@ export namespace config {
 
 }
 
+export namespace events {
+	
+	export enum AMMEvent {
+	    REFRESH_CONFIG = "refresh_config",
+	}
+
+}
+

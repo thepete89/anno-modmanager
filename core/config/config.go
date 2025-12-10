@@ -1,6 +1,7 @@
 package config
 
 import (
+	"anno-modmanager/core/events"
 	"anno-modmanager/core/helpers"
 	"context"
 	"log"
@@ -69,6 +70,7 @@ func (c *AMMConfig) SaveConfigData(cd AMMConfigData) {
 	}
 	c.config = &cd
 	// TODO refresh config in other app parts
+	runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
 }
 
 func (c *AMMConfig) SelectAnnoModsFolder() string {

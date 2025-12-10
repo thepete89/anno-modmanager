@@ -5,6 +5,7 @@ import (
 	"embed"
 
 	"anno-modmanager/core/config"
+	"anno-modmanager/core/events"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -35,6 +36,9 @@ func main() {
 		Bind: []any{
 			app,
 			config,
+		},
+		EnumBind: []any{
+			events.AMMEvents,
 		},
 	})
 

@@ -9,3 +9,11 @@ export function GetConfigData() {
 export function InitAMMConfig(arg1) {
   return window['go']['config']['AMMConfig']['InitAMMConfig'](arg1);
 }
+
+export function SaveConfigData(arg1) {
+  return window['go']['config']['AMMConfig']['SaveConfigData'](arg1);
+}
+
+export function SelectAnnoModsFolder() {
+  return window['go']['config']['AMMConfig']['SelectAnnoModsFolder']();
+}

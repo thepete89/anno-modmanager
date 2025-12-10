@@ -6,3 +6,7 @@ import {context} from '../models';
 export function GetConfigData():Promise<config.AMMConfigData>;
 
 export function InitAMMConfig(arg1:context.Context):Promise<void>;
+
+export function SaveConfigData(arg1:config.AMMConfigData):Promise<void>;
+
+export function SelectAnnoModsFolder():Promise<string>;
