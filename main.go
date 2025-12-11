@@ -6,6 +6,7 @@ import (
 
 	"anno-modmanager/core/config"
 	"anno-modmanager/core/events"
+	"anno-modmanager/core/modio"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -19,6 +20,7 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 	config := config.NewAMMConfig()
+	modioapi := modio.NewModioApi()
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -31,11 +33,13 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup: func(ctx context.Context) {
 			app.InitApp(ctx)
+			modioapi.InitModioApi(ctx)
 			config.InitAMMConfig(ctx)
 		},
 		Bind: []any{
 			app,
 			config,
+			modioapi,
 		},
 		EnumBind: []any{
 			events.AMMEvents,

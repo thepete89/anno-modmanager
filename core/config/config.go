@@ -55,6 +55,7 @@ func (c *AMMConfig) loadOrCreateConfig() {
 func (c *AMMConfig) InitAMMConfig(ctx context.Context) {
 	c.ctx = ctx
 	c.loadOrCreateConfig()
+	runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
 }
 
 func (c *AMMConfig) GetConfigData() AMMConfigData {
@@ -69,7 +70,6 @@ func (c *AMMConfig) SaveConfigData(cd AMMConfigData) {
 		log.Fatal("Saving config.json failed", err)
 	}
 	c.config = &cd
-	// TODO refresh config in other app parts
 	runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
 }
 
