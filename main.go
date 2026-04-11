@@ -18,7 +18,6 @@ var assets embed.FS
 
 func main() {
 	// Create an instance of the app structure
-	app := NewApp()
 	config := config.NewAMMConfig()
 	modioapi := modio.NewModioApi()
 
@@ -32,12 +31,10 @@ func main() {
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup: func(ctx context.Context) {
-			app.InitApp(ctx)
 			modioapi.InitModioApi(ctx)
 			config.InitAMMConfig(ctx)
 		},
 		Bind: []any{
-			app,
 			config,
 			modioapi,
 		},
