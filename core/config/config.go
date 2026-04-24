@@ -1,9 +1,8 @@
 package config
 
 import (
-	//"anno-modmanager/core/events"
+	"anno-modmanager/core/events"
 	"anno-modmanager/core/helpers"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -28,15 +27,17 @@ func NewAMMConfig(app *application.App) *AMMConfig {
 func (c *AMMConfig) openOrCreateConfigfile() *os.File {
 	configRoot, err := os.UserConfigDir()
 	if err != nil {
-		log.Fatal(err)
+		c.app.Logger.Error("User config dir not found", "error", err)
+		os.Exit(1)
 	}
 	configFolder := filepath.Join(configRoot, "anno-modmanager")
 	err = os.MkdirAll(configFolder, 0750)
 	if err != nil {
-		log.Fatal(err)
+		c.app.Logger.Error("Could not create anno modmanager config dir", "error", err)
+		os.Exit(1)
 	}
 	configFile := filepath.Join(configFolder, "config.json")
-	log.Println("CONFIG PATH: ", configFile)
+	c.app.Logger.Debug("config loaded from", "path", configFile)
 	cf := helpers.OpenOrCreateFile(configFile)
 	return cf
 }
@@ -46,15 +47,15 @@ func (c *AMMConfig) loadOrCreateConfig() {
 	defer helpers.CloseFile(cf)
 	configData, err := helpers.LoadOrInitializeFromJsonFile[AMMConfigData](cf)
 	if err != nil {
-		log.Fatal("loading or creating config.json failed", err)
+		c.app.Logger.Error("loading or creating config.json failed", "error", err)
+		os.Exit(1)
 	}
 	c.config = configData
 }
 
 func (c *AMMConfig) InitAMMConfig() {
 	c.loadOrCreateConfig()
-	// TODO changeme
-	//runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
+	c.app.Event.Emit(string(events.REFRESH_CONFIG), c.config)
 }
 
 func (c *AMMConfig) GetConfigData() AMMConfigData {
@@ -66,11 +67,11 @@ func (c *AMMConfig) SaveConfigData(cd AMMConfigData) {
 	defer helpers.CloseFile(cf)
 	err := helpers.SaveToJsonFile(cf, &cd)
 	if err != nil {
-		log.Fatal("Saving config.json failed", err)
+		c.app.Logger.Error("Saving config.json failed", "error", err)
+		os.Exit(1)
 	}
 	c.config = &cd
-	// TODO changeme
-	// runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
+	c.app.Event.Emit(string(events.REFRESH_CONFIG), c.config)
 }
 
 func (c *AMMConfig) SelectAnnoModsFolder() string {
@@ -83,7 +84,7 @@ func (c *AMMConfig) SelectAnnoModsFolder() string {
 		CanChooseFiles(false).
 		PromptForSingleSelection()
 	if err != nil {
-		log.Println("Anno mods folder selection failed", err)
+		c.app.Logger.Error("Anno mods folder selection failed", "error", err)
 		return ""
 	}
 	return folder

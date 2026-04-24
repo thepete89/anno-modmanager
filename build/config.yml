@@ -33,7 +33,7 @@ info:
 # Dev mode configuration
 dev_mode:
   root_path: .
-  log_level: warn
+  log_level: debug
   debounce: 1000
   ignore:
     dir:
