@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=wails3-test
+Exec=wails3-test
+Icon=wails3-test
+Categories=Development;
+Terminal=false
+Keywords=wails
+Version=1.0
+StartupNotify=false

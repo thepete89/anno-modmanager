@@ -1,14 +1,13 @@
 package config
 
 import (
-	"anno-modmanager/core/events"
+	//"anno-modmanager/core/events"
 	"anno-modmanager/core/helpers"
-	"context"
 	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 type AMMConfigData struct {
@@ -18,12 +17,12 @@ type AMMConfigData struct {
 }
 
 type AMMConfig struct {
-	ctx    context.Context
+	app    *application.App
 	config *AMMConfigData
 }
 
-func NewAMMConfig() *AMMConfig {
-	return &AMMConfig{}
+func NewAMMConfig(app *application.App) *AMMConfig {
+	return &AMMConfig{app: app}
 }
 
 func (c *AMMConfig) openOrCreateConfigfile() *os.File {
@@ -52,10 +51,10 @@ func (c *AMMConfig) loadOrCreateConfig() {
 	c.config = configData
 }
 
-func (c *AMMConfig) InitAMMConfig(ctx context.Context) {
-	c.ctx = ctx
+func (c *AMMConfig) InitAMMConfig() {
 	c.loadOrCreateConfig()
-	runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
+	// TODO changeme
+	//runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
 }
 
 func (c *AMMConfig) GetConfigData() AMMConfigData {
@@ -70,18 +69,19 @@ func (c *AMMConfig) SaveConfigData(cd AMMConfigData) {
 		log.Fatal("Saving config.json failed", err)
 	}
 	c.config = &cd
-	runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
+	// TODO changeme
+	// runtime.EventsEmit(c.ctx, string(events.REFRESH_CONFIG), c.config)
 }
 
 func (c *AMMConfig) SelectAnnoModsFolder() string {
 	// TODO
 	userhome, _ := os.UserHomeDir()
-	dialogOptions := runtime.OpenDialogOptions{
-		DefaultDirectory: userhome,
-		DefaultFilename:  "",
-		Title:            "Select Anno 1800 Mods Folder",
-	}
-	folder, err := runtime.OpenDirectoryDialog(c.ctx, dialogOptions)
+	folder, err := c.app.Dialog.OpenFile().
+		SetTitle("Select Mods Folder").
+		SetDirectory(userhome).
+		CanChooseDirectories(true).
+		CanChooseFiles(false).
+		PromptForSingleSelection()
 	if err != nil {
 		log.Println("Anno mods folder selection failed", err)
 		return ""

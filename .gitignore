@@ -1,5 +1,7 @@
-build
+build/linux/appimage/build
+build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
 node_modules
 frontend/build
 frontend/.svelte-kit
 frontend/node_modules
+bin

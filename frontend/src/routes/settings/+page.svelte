@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { PageProps } from './$types';
     import { FolderOpenIcon, SaveIcon } from '@lucide/svelte';
-    import { SelectAnnoModsFolder, SaveConfigData } from '$lib/wailsjs/go/config/AMMConfig';
+    import { AMMConfig } from '$lib/bindings/anno-modmanager/core/config';
     let { data }: PageProps = $props();
 
     let modfolder = $derived(data.appConfig.modfolder);
@@ -9,11 +9,11 @@
     let apiendpoint = $derived(data.appConfig.apiendpoint);
 
     const openAnnoModFolder = async () => {
-        modfolder = await SelectAnnoModsFolder();
+        modfolder = await AMMConfig.SelectAnnoModsFolder();
     }
 
     const saveConfig = async () => {
-        await SaveConfigData({ modfolder, apikey, apiendpoint });
+        await AMMConfig.SaveConfigData({ modfolder, apikey, apiendpoint });
     }
 </script>
 

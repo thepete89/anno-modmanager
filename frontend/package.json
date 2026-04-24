@@ -26,5 +26,9 @@
 		"tailwindcss": "^4.2.2",
 		"typescript": "^6.0.3",
 		"vite": "^8.0.8"
+	},
+	"dependencies": {
+		"@types/node": "^25.6.0",
+		"@wailsio/runtime": "^3.0.0-alpha.79"
 	}
 }
