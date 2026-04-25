@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"log/slog"
 
 	"anno-modmanager/core/config"
 	"anno-modmanager/core/modio"
@@ -18,6 +19,7 @@ func main() {
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
 		},
+		LogLevel: slog.LevelDebug,
 	})
 
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
