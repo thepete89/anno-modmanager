@@ -22,9 +22,9 @@
     <fieldset class="space-y-4">
         <label class="label">
             <span class="label-text">Mod Download Folder</span>
-            <div class="input-group grid-cols-[1fr_auto]">
+            <div class="field-group grid-cols-[1fr_auto]">
                 <input class="input" type="text" placeholder="Mod Download Folder" bind:value={modfolder} />
-                <button class="ig-btn preset-filled" title="Open Folder." onclick={openAnnoModFolder}>
+                <button class="btn preset-outlined-surface-300-700" title="Open Folder." onclick={openAnnoModFolder}>
                     <FolderOpenIcon size={16} />
                 </button>
             </div>
