@@ -28,12 +28,14 @@ func main() {
 		Height: 800,
 	})
 
-	// TODO switch to service structure
-	config := config.NewAMMConfig(app)
-	modioapi := modio.NewModioApi(app)
-	app.RegisterService(application.NewService(config))
-	app.RegisterService(application.NewService(modioapi))
-	config.InitAMMConfig()
+	// setup services
+	conf := config.NewAMMConfig()
+	api := modio.NewModioApi(conf)
+	app.RegisterService(application.NewService(conf))
+	app.RegisterService(application.NewService(api))
+
+	// init config
+	conf.InitAMMConfig()
 
 	err := app.Run()
 	if err != nil {
